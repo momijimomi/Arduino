@@ -1,15 +1,41 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <Wire.h>
  
 // Data to Arduino pin
 #define ONE_WIRE_BUS 13
  
-
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-
-
+int event;
+String temp1;
+String temp2;
+String temp3;
+String temp4;
+String temp5;
+String temp6;
+  
+void ds18b20(){
+  sensors.requestTemperatures(); // Send the command to get temperatures
+  temp1 = String(sensors.getTempCByIndex(0),DEC);
+  temp2 = String(sensors.getTempCByIndex(1),DEC);
+  temp3 = String(sensors.getTempCByIndex(2),DEC);
+  temp4 = String(sensors.getTempCByIndex(3),DEC);
+  temp5 = String(sensors.getTempCByIndex(4),DEC);
+  temp6 = String(sensors.getTempCByIndex(5),DEC);
+  Serial.print(temp1); 
+  Serial.print("  ");   
+  Serial.print(temp2); 
+  Serial.print("  ");   
+  Serial.print(temp3); 
+  Serial.print("  ");   
+  Serial.print(temp4); 
+  Serial.print("  ");   
+  Serial.print(temp5); 
+  Serial.print("  ");   
+  Serial.println(temp6); 
+}
   
 // マスターからを受信
 void receiveEvent(int howmany) {
@@ -69,40 +95,16 @@ void requestEvent() {
   }            
 }
 
-void ds18b20(){
-  sensors.requestTemperatures(); // Send the command to get temperatures
-  String temp1 = String(sensors.getTempCByIndex(0),DEC);
-  String temp2 = String(sensors.getTempCByIndex(1),DEC);
-  String temp3 = String(sensors.getTempCByIndex(2),DEC);
-  String temp4 = String(sensors.getTempCByIndex(3),DEC);
-  String temp5 = String(sensors.getTempCByIndex(4),DEC);
-  String temp6 = String(sensors.getTempCByIndex(5),DEC);
-  Serial.print(temp1); 
-  Serial.print("  ");   
-  Serial.print(temp2); 
-  Serial.print("  ");   
-  Serial.print(temp3); 
-  Serial.print("  ");   
-  Serial.print(temp4); 
-  Serial.print("  ");   
-  Serial.print(temp5); 
-  Serial.print("  ");   
-  Serial.println(temp6); 
-}
-
-
 void setup(void)
 {
   Serial.begin(9600);
   // Start up the library
   sensors.setResolution(12);  
   sensors.begin();
-  Wire.begin(0x10) ;                 // Ｉ２Ｃの初期化、自アドレスを10とする
+  Wire.begin(0x10);                 // Ｉ２Ｃの初期化、自アドレスを10とする
   Wire.onReceive(receiveEvent) ;     // マスタからのデータ送信対応のコールバック関数登録
   Wire.onRequest(requestEvent) ;     // マスタからのデータ取得要求のコールバック関数登録
- 
 }
- 
  
 void loop(void)
 {
